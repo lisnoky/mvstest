@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<link rel="stylesheet" href="MEAVERSE.css">
+</head>
+<body>
+
+<div class="container">
+  <div class="title-text-home">Artists</div>
+  <!-- Список рендерится автоматически из artists.json -->
+  <div class="updates" id="artists-list">
+    <!-- Skeleton-loader пока грузится JSON -->
+    <div style="color:var(--t3);font-size:13px;padding:8px 4px;">Загрузка...</div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="home.html"    data-target="home"     class="icon-link" id="home-link">
+    <i class="icon-home"></i><span>Home</span>
+  </a>
+  <a href="artists.html" data-target="artists"  class="icon-link" id="artists-link">
+    <i class="icon-artists"></i><span>Artists</span>
+  </a>
+  <a href="citfm.html"   data-target="citfm"    class="icon-link" id="citfm-link">
+    <i class="icon-citfm"></i><span>Cit.FM</span>
+  </a>
+  <a href="onstage.html" data-target="onstage"  class="icon-link" id="onstage-link">
+    <i class="icon-onstage"></i><span>On Stage</span>
+  </a>
+  <a href="related.html" data-target="related"  class="icon-link" id="related-link">
+    <i class="icon-related"></i><span>Related</span>
+  </a>
+</div>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
