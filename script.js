@@ -1,10 +1,5 @@
 /* ═══════════════════════════════════════
-   MEAVERSE script.js v3
-   — TG theme detection
-   — Nav active state
-   — Artists auto-render from artists.json
-     с живыми данными канала через
-     Telegram public API (no token needed)
+   MEAVERSE script.js v4
    ═══════════════════════════════════════ */
 (function () {
   'use strict';
@@ -28,12 +23,21 @@
     document.body.classList.toggle('tg-dark', s === 'dark');
   }
 
-  /* ── 2. Активный пункт nav ── */
+  /* ── 2. Активный пункт nav + розовый блик на главных страницах ── */
+  const MAIN_TABS = ['home.html', 'artists.html', 'citfm.html', 'onstage.html', 'related.html'];
+
   function setActiveNav () {
     const page = location.pathname.split('/').pop() || 'home.html';
+
+    // Розовый градиент только на главных вкладках
+    if (MAIN_TABS.includes(page)) {
+      document.body.classList.add('has-glow');
+    }
+
     document.querySelectorAll('.icon-link').forEach(link => {
       const href   = link.getAttribute('href') || '';
       const target = link.dataset.target || '';
+
       const active =
         href === page ||
         (page.startsWith('view_')   && target === 'citfm')   ||
@@ -42,6 +46,7 @@
         (page === 'meaverse.html'   && target === 'citfm')   ||
         (page === 'profile.html'    && target === 'related') ||
         (page === 'shop.html'       && target === 'related');
+
       link.classList.toggle('active', active);
     });
   }
@@ -55,20 +60,16 @@
     });
   }
 
-  /* ── 4. Рендер артистов ──────────────────────────────────────
-     Загружает artists.json (только handle и url),
-     для каждого канала тянет живые данные через:
-       https://t.me/{username} — парсинг og:image, og:title
-     Это работает без токена — Telegram отдаёт публичные meta.
+  /* ── 4. Автоматический рендер артистов ──
+     Читает artists.json. Каждая строка там:
+       { "id": "...", "handle": "username_без_@", "url": "https://t.me/...", "since": "дата" }
 
-     Но поскольку TG WebApp может блокировать cross-origin fetch,
-     используем tgstat.ru как прокси для аватарок, а название
-     и дату берём из нашего JSON (ты сама задаёшь `since`).
-     Если хочешь живое имя канала — нужен бэкенд.
+     Аватарка берётся с t.me/i/userpic/320/{handle}.jpg (живая, без токена).
+     Название канала: пробуем подтянуть через CORS-proxy из og:title страницы.
+     Если не получилось — показывает @handle.
 
-     Итог: добавить артиста = одна строка в artists.json.
-     Аватарка подтягивается автоматически с tgstat.
-  ──────────────────────────────────────────────────────────── */
+     ДОБАВИТЬ АРТИСТА → одна строка в artists.json (инструкция ниже).
+  ── */
   function renderArtists () {
     const list = document.getElementById('artists-list');
     if (!list) return;
@@ -78,22 +79,25 @@
       .then(artists => {
         list.innerHTML = '';
         artists.forEach((a, i) => {
+          const handle = a.handle.replace(/^@/, '');
           const item = document.createElement('a');
-          item.id    = a.id;
-          item.href  = a.url;
+          item.id = a.id;
+          item.href = a.url;
           item.target = '_blank';
-          item.rel   = 'noopener';
+          item.rel = 'noopener';
           item.className = 'artist-container';
           item.style.animationDelay = `${(i * 0.03).toFixed(2)}s`;
 
-          // Аватарка: пробуем загрузить с tgstat по handle
-          const handle = a.handle.replace(/^@/, '');
-          const photoSrc = `https://t.me/i/userpic/320/${handle}.jpg`;
+          // Fallback аватарка — первая буква handle
+          const fallbackSVG = `data:image/svg+xml,${encodeURIComponent(
+            `<svg xmlns="http://www.w3.org/2000/svg" width="46" height="46"><circle cx="23" cy="23" r="23" fill="#e0e4f0"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="20" font-family="sans-serif" fill="#9098b4">${handle.charAt(0).toUpperCase()}</text></svg>`
+          )}`;
 
           item.innerHTML = `
-            <img class="artist-photo" src="${photoSrc}" alt="${handle}"
-                 loading="lazy"
-                 onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2246%22 height=%2246%22><circle cx=%2223%22 cy=%2223%22 r=%2223%22 fill=%22%23e0e4f0%22/><text x=%2250%25%22 y=%2254%25%22 dominant-baseline=%22middle%22 text-anchor=%22middle%22 font-size=%2220%22 fill=%22%239098b4%22>${handle.charAt(0).toUpperCase()}</text></svg>'">
+            <img class="artist-photo"
+                 src="https://t.me/i/userpic/320/${handle}.jpg"
+                 alt="${handle}" loading="lazy"
+                 onerror="this.src='${fallbackSVG}'">
             <div class="text">
               <span class="channel_name" id="cn-${a.id}">@${handle}</span>
               <div class="open_date">${a.since} · @${handle}</div>
@@ -102,9 +106,8 @@
           `;
           list.appendChild(item);
 
-          // Пробуем подтянуть живое имя канала через виджет TG
-          // (работает если сервер отдаёт CORS — на GitHub Pages обычно ок)
-          fetchChannelTitle(handle, a.id);
+          // Живое название канала
+          fetchTitle(handle, a.id);
         });
       })
       .catch(() => {
@@ -112,24 +115,19 @@
       });
   }
 
-  /* Пробуем получить название канала.
-     Telegram отдаёт og:title в meta при запросе страницы.
-     Работает через сторонний CORS-proxy или нативно на сервере.
-     На GitHub Pages — fetch напрямую не пройдёт из-за CORS,
-     поэтому пробуем и молча фейлим если не получилось. */
-  function fetchChannelTitle (handle, id) {
-    const proxy = `https://corsproxy.io/?url=${encodeURIComponent(`https://t.me/${handle}`)}`;
-    fetch(proxy, { cache: 'force-cache' })
+  function fetchTitle (handle, id) {
+    const url = `https://corsproxy.io/?url=${encodeURIComponent(`https://t.me/${handle}`)}`;
+    fetch(url, { cache: 'force-cache' })
       .then(r => r.text())
       .then(html => {
-        const m = html.match(/<meta[^>]+property="og:title"[^>]+content="([^"]+)"/i)
-                 || html.match(/<meta[^>]+content="([^"]+)"[^>]+property="og:title"/i);
-        if (m && m[1]) {
+        const m = html.match(/<meta[^>]+property=["']og:title["'][^>]+content=["']([^"']+)["']/i)
+                 || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:title["']/i);
+        if (m?.[1]) {
           const el = document.getElementById(`cn-${id}`);
           if (el) el.textContent = m[1].trim();
         }
       })
-      .catch(() => {}); // silently ignore — fallback уже @handle
+      .catch(() => {});
   }
 
   /* ── Init ── */
