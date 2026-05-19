@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════
-   MEAVERSE — CSS v4  (Cit.FM Universe)
+   MEAVERSE — CSS v5
    SF Pro · Minimalism · Glass
    #1074c2 blue · #ffcdda pink
    ═══════════════════════════════════════ */
@@ -20,7 +20,6 @@
   font-weight: 700; font-style: normal; font-display: swap;
 }
 
-/* ── Variables — light ── */
 :root {
   --font: 'SF Pro', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Roboto, sans-serif;
 
@@ -41,19 +40,18 @@
   --t3:        #9098b4;
 
   --nav-h:     60px;
-  --r:         12px;
-  --r-lg:      16px;
+  --r:         14px;
+  --r-lg:      18px;
   --spring:    cubic-bezier(0.34,1.56,0.64,1);
   --ease:      cubic-bezier(0.25,0.46,0.45,0.94);
 }
 
-/* ── Dark ── */
 body.tg-dark {
   --bg:        #0e0f18;
   --surface:   rgba(255,255,255,0.055);
   --surface-s: rgba(255,255,255,0.085);
   --border:    rgba(255,255,255,0.09);
-  --shadow:    0 2px 16px rgba(0,0,0,0.55);   /* ← видно в тёмной */
+  --shadow:    0 2px 16px rgba(0,0,0,0.55);
   --accent:    #4da3f5;
   --accent-s:  rgba(77,163,245,0.12);
   --pink:      #ffb3c6;
@@ -63,7 +61,6 @@ body.tg-dark {
   --t3:        #555c78;
 }
 
-/* ── Reset ── */
 *,*::before,*::after { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
 html { -webkit-text-size-adjust:100%; }
 a { color:inherit; text-decoration:none; }
@@ -83,26 +80,17 @@ body {
   position: relative;
 }
 
-/* ══════════════════════════════════════
-   РАДИАЛЬНЫЙ ГРАДИЕНТ — верхний блик
-   Только на главных страницах вкладок.
-   Подключается классом .has-glow на body,
-   который выставляет script.js
-   ══════════════════════════════════════ */
+/* Розовый радиальный блик — только на главных вкладках */
 body.has-glow::before {
   content: '';
   position: fixed;
-  /* Центр вверху, чуть правее середины */
-  top: -120px;
-  left: 50%;
-  transform: translateX(-30%);
-  width: 500px;
-  height: 500px;
+  top: -140px; left: 50%;
+  transform: translateX(-20%);
+  width: 480px; height: 480px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at center,
-    rgba(255,205,218,0.38) 0%,
-    rgba(255,205,218,0.10) 40%,
+  background: radial-gradient(circle at center,
+    rgba(255,205,218,0.36) 0%,
+    rgba(255,205,218,0.08) 45%,
     transparent 70%
   );
   pointer-events: none;
@@ -131,13 +119,12 @@ body.has-glow::before {
 }
 
 /* ══════════════════════════════
-   BANNER CARD
+   BANNER CARD — с датой справа
    ══════════════════════════════ */
 .banner-card {
   display: block;
   background: var(--surface-s);
-  backdrop-filter: var(--blur);
-  -webkit-backdrop-filter: var(--blur);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
   border: 1px solid var(--border);
   border-radius: var(--r-lg);
   box-shadow: var(--shadow);
@@ -147,7 +134,14 @@ body.has-glow::before {
 }
 .banner-card:active { transform:scale(0.975); opacity:0.9; }
 
-.banner-card-inner { padding: 12px 14px 10px; }
+.banner-card-inner {
+  padding: 12px 14px 10px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+.banner-card-text { flex: 1; min-width: 0; }
 .banner-label {
   font-size: 10px; font-weight: 600;
   letter-spacing: 1px; text-transform: uppercase;
@@ -157,8 +151,14 @@ body.has-glow::before {
   font-size: 15px; font-weight: 600;
   color: var(--t1); line-height: 1.3;
 }
+.banner-date {
+  font-size: 11px; color: var(--t3);
+  white-space: nowrap; padding-top: 2px;
+  flex-shrink: 0;
+}
 .banner-img { width:100%; height:auto; object-fit:cover; }
 
+/* element-border */
 .element-border {
   border-radius: var(--r-lg); overflow: hidden;
   margin-bottom: 10px; border: 1px solid var(--border);
@@ -180,6 +180,7 @@ body.has-glow::before {
   box-shadow: var(--shadow);
   transition: transform 0.18s var(--spring);
   animation: slideIn 0.30s var(--ease) both;
+  overflow: hidden;
 }
 .artist-container:active { transform:scale(0.96); }
 
@@ -195,8 +196,10 @@ body.has-glow::before {
 @keyframes slideIn { from{opacity:0;transform:translateX(-6px)} to{opacity:1;transform:translateX(0)} }
 
 .artist-photo {
-  width:46px; height:46px; border-radius:50%;
-  object-fit:cover; flex-shrink:0; border:1px solid var(--border);
+  width: 46px; height: 46px;
+  border-radius: 50%;
+  object-fit: cover; flex-shrink: 0;
+  border: 1px solid var(--border);
 }
 .artist-container .text { flex:1; min-width:0; }
 .channel_name {
@@ -207,7 +210,7 @@ body.has-glow::before {
 .artist-chevron { font-size:16px; color:var(--t3); flex-shrink:0; padding-left:4px; }
 
 /* ══════════════════════════════
-   CIT.FM CARDS
+   CIT.FM CARDS — с датой справа
    ══════════════════════════════ */
 .citfm-card {
   display: block;
@@ -221,47 +224,121 @@ body.has-glow::before {
 }
 .citfm-card:active { transform:scale(0.972); }
 .citfm-img { width:100%; height:auto; }
-.citfm-info { padding: 10px 13px 12px; }
+.citfm-info {
+  padding: 10px 13px 12px;
+  display: flex; align-items: flex-start;
+  justify-content: space-between; gap: 8px;
+}
+.citfm-info-text { flex: 1; }
 .citfm-label { font-size:10px; font-weight:600; letter-spacing:1px; text-transform:uppercase; color:var(--accent); margin-bottom:3px; }
 .citfm-title { font-size:15px; font-weight:600; color:var(--t1); line-height:1.3; }
+.citfm-date { font-size:11px; color:var(--t3); white-space:nowrap; padding-top:2px; flex-shrink:0; }
+
+/* ══════════════════════════════
+   ARTICLE TEXT — meaverse.html / pressconf
+   ══════════════════════════════ */
+.citfm-text {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--t1);
+}
+.citfm-text .bold {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.textmargin {
+  margin-bottom: 14px;
+  color: var(--t2);
+}
+.textmargin li {
+  margin-left: 16px;
+  margin-bottom: 6px;
+}
+.textmargin a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(16,116,194,0.3);
+}
+
+/* ══════════════════════════════
+   PRESS CONF — фото + цитата
+   ══════════════════════════════ */
+.prequote_bold {
+  font-size: 13px; color: var(--t3);
+  text-align: center; font-style: italic;
+  padding: 4px 4px 12px;
+}
+
+/* Блок с фото + цитатой как пузырь */
+.pc-block {
+  margin-bottom: 18px;
+}
+
+/* Стек фото — два рядом */
+.row-onstage-photo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+.row-onstage-photo .element-border {
+  margin-bottom: 0;
+  border-radius: var(--r);
+}
+
+/* Цитата как пузырь-сообщение */
+.pc-quote {
+  background: var(--surface-s);
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--border);
+  border-left: 2px solid var(--pink);
+  border-radius: var(--r);
+  padding: 10px 14px;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--t1);
+}
+.pc-quote-name {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 5px;
+}
 
 /* ══════════════════════════════
    INTERVIEW CHAT BUBBLES
-   FIX: средний пузырь у группы из 3+
    ══════════════════════════════ */
 .header {
   display:flex; align-items:center; gap:10px; padding:10px 0 14px;
 }
 .icon-left {
-  display:flex; align-items:center; justify-content:center;
-  width:30px; height:30px; border-radius:50%;
-  background:var(--surface-s); border:1px solid var(--border);
-  color:var(--accent); font-size:18px; flex-shrink:0;
-  backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
+  display: flex; align-items: center; justify-content: center;
+  width: 30px; height: 30px; border-radius: 50%;
+  background: var(--surface-s); border: 1px solid var(--border);
+  color: var(--accent); font-size: 20px; line-height: 1;
+  flex-shrink: 0;
+  backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  /* Стрелка по центру */
+  padding-right: 1px;
 }
 .title_text { font-size:16px; font-weight:600; color:var(--t1); }
 
-.prequote_bold {
-  font-size:14px; color:var(--t2); line-height:1.65;
-  text-align:center; font-style:italic; padding:0 4px 20px;
+/* Дата в header статьи */
+.header-date {
+  font-size: 11px; color: var(--t3);
+  margin-left: auto; white-space: nowrap;
 }
 
-.textmargin { padding:0; }
 .quote { display:flex; flex-direction:column; }
 .message { display:flex; flex-direction:column; }
 
-/* Гость — слева */
 .message_a { align-self:flex-start; max-width:85%; margin-bottom:10px; }
 .message_a .message_au {
   font-size:11px; font-weight:600; color:var(--accent);
   margin-bottom:3px; padding-left:2px;
 }
 
-/* Базовые стили — одинаковые для всех пузырей */
-.message_a_top,
-.message_a_mid,
-.message_a_last,
-.message_a_only {
+.message_a_top, .message_a_mid, .message_a_last, .message_a_only {
   background: var(--surface-s);
   border: 1px solid var(--border);
   border-left: 2px solid var(--pink);
@@ -269,22 +346,18 @@ body.has-glow::before {
   font-size: 14px; line-height: 1.6;
   padding: 8px 12px;
 }
-/* Скругления — каждый вариант отдельно */
 .message_a_top  { border-radius: var(--r) var(--r) 4px 4px; margin-bottom:2px; }
-.message_a_mid  { border-radius: 4px 4px 4px 4px; margin-bottom:2px; }  /* ← FIX: средний */
+.message_a_mid  { border-radius: 4px; margin-bottom:2px; }
 .message_a_last { border-radius: 4px 4px var(--r) var(--r); }
 .message_a_only { border-radius: var(--r); }
 
-/* Интервьюер — справа */
 .message_q { align-self:flex-end; max-width:85%; margin-bottom:10px; }
 .message_q .message_au {
   font-size:11px; font-weight:600; color:var(--accent);
   margin-bottom:3px; text-align:right; padding-right:2px;
 }
-.message_q_top,
-.message_q_mid,
-.message_q_last,
-.message_q_only {
+
+.message_q_top, .message_q_mid, .message_q_last, .message_q_only {
   background: var(--accent-s);
   border: 1px solid rgba(16,116,194,0.14);
   color: var(--t1);
@@ -299,32 +372,28 @@ body.tg-dark .message_q_only {
   border-color: rgba(77,163,245,0.18);
 }
 .message_q_top  { border-radius: var(--r) var(--r) 4px 4px; margin-bottom:2px; }
-.message_q_mid  { border-radius: 4px 4px 4px 4px; margin-bottom:2px; }  /* ← FIX */
+.message_q_mid  { border-radius: 4px; margin-bottom:2px; }
 .message_q_last { border-radius: 4px 4px var(--r) var(--r); }
 .message_q_only { border-radius: var(--r); }
 
 /* ══════════════════════════════
    BOTTOM NAV
-   Полупрозрачный, с размытием
-   Иконки — inline SVG через background-image
+   Иконки — unicode, стиль как в v1
    ══════════════════════════════ */
 .bottom-nav {
   position: fixed; bottom:0; left:0; right:0;
   height: var(--nav-h);
   display: flex; align-items: center; justify-content: space-around;
   padding: 0 8px env(safe-area-inset-bottom,4px);
-
-  /* Полупрозрачный фон с размытием */
-  background: rgba(242,243,248,0.80);
+  background: rgba(242,243,248,0.82);
   backdrop-filter: blur(20px) saturate(160%);
   -webkit-backdrop-filter: blur(20px) saturate(160%);
-  border-top: 1px solid rgba(0,0,0,0.06);
-  box-shadow: 0 -1px 0 rgba(0,0,0,0.04);
+  border-top: 1px solid var(--border);
   z-index: 100;
 }
 body.tg-dark .bottom-nav {
-  background: rgba(10,11,20,0.80);
-  border-top-color: rgba(255,255,255,0.06);
+  background: rgba(10,11,20,0.84);
+  border-top-color: rgba(255,255,255,0.07);
 }
 
 .icon-link {
@@ -335,7 +404,7 @@ body.tg-dark .bottom-nav {
 }
 .icon-link:active { transform:scale(0.84); }
 
-/* active indicator bar at top */
+/* Active indicator */
 .icon-link.active::after {
   content:'';
   position:absolute; top:0; left:50%; transform:translateX(-50%);
@@ -344,56 +413,69 @@ body.tg-dark .bottom-nav {
 }
 
 .icon-link span {
-  font-size:10px; font-weight:500; color:var(--t3);
-  letter-spacing:0.1px; transition:color 0.15s;
+  font-size: 10px; font-weight: 500;
+  color: var(--t3); letter-spacing: 0.1px;
+  transition: color 0.15s;
 }
 .icon-link.active span { color:var(--accent); font-weight:600; }
 
-/* Nav icons — SVG встроенные через mask-image */
-.nav-icon {
-  width: 22px; height: 22px; flex-shrink:0;
-  background-color: var(--t2);
-  mask-size: contain; mask-repeat:no-repeat; mask-position:center;
-  -webkit-mask-size: contain; -webkit-mask-repeat:no-repeat; -webkit-mask-position:center;
-  transition: background-color 0.15s;
+/* Icon image — из SVG папки, как было изначально */
+.icon-link i {
+  display: block;
+  width: 26px; height: 26px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  opacity: 0.45;
+  transition: opacity 0.15s;
+  font-style: normal;
+  font-size: 0; /* скрываем текст если SVG не грузится */
 }
-.icon-link.active .nav-icon { background-color: var(--accent); }
+.icon-link.active i { opacity: 1; }
 
-/* ⌂ Home — домик */
-.nav-icon.ni-home {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z'/%3E%3C/svg%3E");
+/* SVG иконки из папки SVG — как в оригинале */
+i.icon-home    { background-image: url('SVG/home.svg'); }
+i.icon-artists { background-image: url('SVG/artists.svg'); }
+i.icon-citfm   { background-image: url('SVG/citfm.svg'); }
+i.icon-onstage { background-image: url('SVG/onstage.svg'); }
+i.icon-related { background-image: url('SVG/related.svg'); }
+
+/* Цвет активной иконки через filter (синий #1074c2) */
+.icon-link.active i {
+  filter: invert(27%) sepia(94%) saturate(1200%) hue-rotate(192deg) brightness(95%) contrast(95%);
+  opacity: 1;
 }
-
-/* ✦ Artists — звезда */
-.nav-icon.ni-artists {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z'/%3E%3C/svg%3E");
-}
-
-/* 🎙 Cit.FM — микрофон */
-.nav-icon.ni-citfm {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 18.93V22h2v-2.07A7 7 0 0 0 19 13h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3zm-1 18.93V22h2v-2.07A7 7 0 0 0 19 13h-2a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.93z'/%3E%3C/svg%3E");
-}
-
-/* 🎤 On Stage — театральные маски / сцена */
-.nav-icon.ni-onstage {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 20h20v2H2v-2zm2-4l4.5-9 3.5 7 2.5-4 4 6H4z'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M2 20h20v2H2v-2zm2-4l4.5-9 3.5 7 2.5-4 4 6H4z'/%3E%3C/svg%3E");
+body.tg-dark .icon-link.active i {
+  filter: invert(65%) sepia(60%) saturate(600%) hue-rotate(185deg) brightness(110%);
 }
 
-/* 🔗 Related — цепочка/скрепка */
-.nav-icon.ni-related {
-  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 0-10z'/%3E%3C/svg%3E");
-  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7a5 5 0 0 0 0 10h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4a5 5 0 0 0 0-10z'/%3E%3C/svg%3E");
-}
+/* Fallback если SVG файлов нет — unicode */
+i.icon-home::before    { content:'⌂'; font-size:20px; line-height:26px; }
+i.icon-artists::before { content:'✦'; font-size:18px; line-height:26px; }
+i.icon-citfm::before   { content:'◈'; font-size:18px; line-height:26px; }
+i.icon-onstage::before { content:'◉'; font-size:18px; line-height:26px; }
+i.icon-related::before { content:'⟡'; font-size:18px; line-height:26px; }
+
+/* ── On Stage иконка — пузырь ── */
+/* Используем кастомный unicode символ речевого пузыря */
+i.icon-onstage { background-image: url('SVG/onstage.svg'); }
+/* Если SVG нет, fallback: */
+i.icon-onstage::before { content:'💬'; font-size:17px; line-height:26px; }
 
 /* ── Misc ── */
 .section-label {
   font-size:11px; font-weight:600; letter-spacing:0.8px;
   text-transform:uppercase; color:var(--t3); padding:14px 0 8px;
 }
+
+.stage-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.stage-item {
+  border-radius: var(--r); overflow:hidden; border:1px solid var(--border);
+  transition:transform 0.18s var(--spring);
+}
+.stage-item:active { transform:scale(0.96); }
+.stage-item img { width:100%; height:auto; }
+
 .profile-card {
   background:var(--surface-s); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
   border:1px solid var(--border); border-radius:var(--r-lg);
@@ -402,23 +484,3 @@ body.tg-dark .bottom-nav {
 .profile-avatar { width:68px; height:68px; border-radius:50%; border:1px solid var(--border); margin:0 auto 10px; }
 .profile-name   { font-size:19px; font-weight:700; color:var(--t1); }
 .profile-handle { font-size:13px; color:var(--accent); margin-top:2px; }
-
-.shop-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.shop-card {
-  background:var(--surface); backdrop-filter:var(--blur); -webkit-backdrop-filter:var(--blur);
-  border:1px solid var(--border); border-radius:var(--r); overflow:hidden;
-  transition:transform 0.18s var(--spring);
-}
-.shop-card:active { transform:scale(0.95); }
-.shop-img  { width:100%; height:auto; }
-.shop-info { padding:8px 10px 10px; }
-.shop-name { font-size:13px; font-weight:600; color:var(--t1); }
-.shop-price{ font-size:12px; color:var(--accent); margin-top:2px; }
-
-.stage-grid { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-.stage-item {
-  border-radius:var(--r); overflow:hidden; border:1px solid var(--border);
-  transition:transform 0.18s var(--spring);
-}
-.stage-item:active { transform:scale(0.96); }
-.stage-item img { width:100%; height:auto; }
