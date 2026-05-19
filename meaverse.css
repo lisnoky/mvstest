@@ -277,9 +277,12 @@ body.has-glow::before {
 /* Стек фото — два рядом */
 .row-onstage-photo {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;   /* 2 в ряд по умолчанию */
   gap: 6px;
   margin-bottom: 8px;
+}
+.row-onstage-photo.cols-3 {
+  grid-template-columns: 1fr 1fr 1fr; /* 3 в ряд */
 }
 .row-onstage-photo .element-border {
   margin-bottom: 0;
@@ -425,19 +428,25 @@ body.tg-dark .bottom-nav {
 }
 .icon-link.active span { color: var(--accent); font-weight: 600; }
 
-/* ── SVG-иконки inline через <svg> тег прямо в HTML ──
-   Все одного стиля: stroke-based, 24×24, strokeWidth 1.7,
-   round linecap/linejoin, без fill (кроме пузыря).
-   Цвет задаётся через currentColor — меняется через CSS color.
-   ── */
 .icon-link svg {
   width: 24px; height: 24px;
-  color: var(--t2);
-  transition: color 0.15s;
   display: block;
   flex-shrink: 0;
+  fill: none;
+  stroke: var(--t2);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.15s;
 }
-.icon-link.active svg { color: var(--accent); }
+.icon-link svg rect,
+.icon-link svg line,
+.icon-link svg path,
+.icon-link svg circle {
+  fill: none;
+  stroke: inherit;
+}
+.icon-link.active svg { stroke: var(--accent); }
 
 /* ── Misc ── */
 .section-label {

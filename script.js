@@ -17,10 +17,18 @@
   function setTheme(s) { document.body.classList.toggle('tg-dark', s === 'dark'); }
 
   function setActiveNav() {
-    const page = location.pathname.split('/').pop() || 'home.html';
+    // Получаем имя текущего файла максимально надёжно
+    let page = location.pathname.split('/').pop();
+    if (!page || page === '') {
+      // Fallback: смотрим на текущий HTML файл через document.currentScript или URL
+      page = location.href.split('/').pop().split('?')[0].split('#')[0] || 'home.html';
+    }
+    if (!page || page === '') page = 'home.html';
+
     if (MAIN_TABS.includes(page)) document.body.classList.add('has-glow');
+
     document.querySelectorAll('.icon-link').forEach(link => {
-      const href = link.getAttribute('href') || '';
+      const href = (link.getAttribute('href') || '').split('/').pop();
       const target = link.dataset.target || '';
       const active = href === page
         || (page.startsWith('view_')   && target === 'citfm')
