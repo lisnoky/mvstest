@@ -378,7 +378,6 @@ body.tg-dark .message_q_only {
 
 /* ══════════════════════════════
    BOTTOM NAV
-   Иконки — unicode, стиль как в v1
    ══════════════════════════════ */
 .bottom-nav {
   position: fixed; bottom:0; left:0; right:0;
@@ -397,18 +396,24 @@ body.tg-dark .bottom-nav {
 }
 
 .icon-link {
-  display: flex; flex-direction:column; align-items:center; gap:3px;
-  padding: 6px 0; flex:1; max-width:68px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* иконка и подпись по центру кнопки */
+  justify-content: center;
+  gap: 4px;
+  padding: 6px 0;
+  flex: 1;
+  max-width: 72px;
   position: relative;
   transition: transform 0.16s var(--spring);
 }
-.icon-link:active { transform:scale(0.84); }
+.icon-link:active { transform: scale(0.84); }
 
-/* Active indicator */
+/* Active indicator — полоска сверху */
 .icon-link.active::after {
-  content:'';
-  position:absolute; top:0; left:50%; transform:translateX(-50%);
-  width:20px; height:2px; border-radius:0 0 2px 2px;
+  content: '';
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 20px; height: 2px; border-radius: 0 0 2px 2px;
   background: var(--accent);
 }
 
@@ -416,51 +421,23 @@ body.tg-dark .bottom-nav {
   font-size: 10px; font-weight: 500;
   color: var(--t3); letter-spacing: 0.1px;
   transition: color 0.15s;
+  text-align: center;
 }
-.icon-link.active span { color:var(--accent); font-weight:600; }
+.icon-link.active span { color: var(--accent); font-weight: 600; }
 
-/* Icon image — из SVG папки, как было изначально */
-.icon-link i {
+/* ── SVG-иконки inline через <svg> тег прямо в HTML ──
+   Все одного стиля: stroke-based, 24×24, strokeWidth 1.7,
+   round linecap/linejoin, без fill (кроме пузыря).
+   Цвет задаётся через currentColor — меняется через CSS color.
+   ── */
+.icon-link svg {
+  width: 24px; height: 24px;
+  color: var(--t2);
+  transition: color 0.15s;
   display: block;
-  width: 26px; height: 26px;
-  background-size: contain;
-  background-repeat: no-repeat;
-  background-position: center;
-  opacity: 0.45;
-  transition: opacity 0.15s;
-  font-style: normal;
-  font-size: 0; /* скрываем текст если SVG не грузится */
+  flex-shrink: 0;
 }
-.icon-link.active i { opacity: 1; }
-
-/* SVG иконки из папки SVG — как в оригинале */
-i.icon-home    { background-image: url('SVG/home.svg'); }
-i.icon-artists { background-image: url('SVG/artists.svg'); }
-i.icon-citfm   { background-image: url('SVG/citfm.svg'); }
-i.icon-onstage { background-image: url('SVG/onstage.svg'); }
-i.icon-related { background-image: url('SVG/related.svg'); }
-
-/* Цвет активной иконки через filter (синий #1074c2) */
-.icon-link.active i {
-  filter: invert(27%) sepia(94%) saturate(1200%) hue-rotate(192deg) brightness(95%) contrast(95%);
-  opacity: 1;
-}
-body.tg-dark .icon-link.active i {
-  filter: invert(65%) sepia(60%) saturate(600%) hue-rotate(185deg) brightness(110%);
-}
-
-/* Fallback если SVG файлов нет — unicode */
-i.icon-home::before    { content:'⌂'; font-size:20px; line-height:26px; }
-i.icon-artists::before { content:'✦'; font-size:18px; line-height:26px; }
-i.icon-citfm::before   { content:'◈'; font-size:18px; line-height:26px; }
-i.icon-onstage::before { content:'◉'; font-size:18px; line-height:26px; }
-i.icon-related::before { content:'⟡'; font-size:18px; line-height:26px; }
-
-/* ── On Stage иконка — пузырь ── */
-/* Используем кастомный unicode символ речевого пузыря */
-i.icon-onstage { background-image: url('SVG/onstage.svg'); }
-/* Если SVG нет, fallback: */
-i.icon-onstage::before { content:'💬'; font-size:17px; line-height:26px; }
+.icon-link.active svg { color: var(--accent); }
 
 /* ── Misc ── */
 .section-label {
